@@ -1,8 +1,9 @@
+const path = require('path');
+const glob = require('glob');
+const fs = require('fs')
+
 function getTargetLang(context) {
     var targetLangArr = [];
-
-    var path = require('path');
-    var glob = require('glob');
     var providedTranslationPathPattern;
     var providedTranslationPathRegex;
     var configNodes = context.opts.plugin.pluginInfo._et._root._children;
@@ -26,7 +27,7 @@ function getTargetLang(context) {
         }
     }
 
-    return globWrapper(glob)(providedTranslationPathPattern)
+    return globWrapper(providedTranslationPathPattern)
         .then(
             langFiles => {
                 langFiles.forEach(function (langFile) {
@@ -44,19 +45,18 @@ function getTargetLang(context) {
         )
 }
 
-function globWrapper(glob) {
-    return function (pattern, ) {
-        return new Promise((resolve, reject) => {
-            glob(pattern, (err, langFiles) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(langFiles);
-                }
-            })
+function globWrapper(pattern) {
+    return new Promise((resolve, reject) => {
+        glob(pattern, (err, langFiles) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(langFiles);
+            }
         })
-    }
+    })
 }
+
 
 module.exports = {
     getTargetLang: getTargetLang
