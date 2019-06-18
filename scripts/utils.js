@@ -1,6 +1,29 @@
 const path = require('path');
 const glob = require('glob');
-const fs = require('fs')
+const fs = require('fs');
+
+function getTranslationPath(config, name) {
+    var value = config.match(new RegExp('name="' + name + '" value="(.*?)"', "i"))
+
+    if (value && value[1]) {
+        return value[1];
+
+    } else {
+        return null;
+    }
+}
+
+function getDefaultPath(context) {
+    var configNodes = context.opts.plugin.pluginInfo._et._root._children;
+    var defaultTranslationPath = '';
+
+    for (var node in configNodes) {
+        if (configNodes[node].attrib.name == 'TRANSLATION_PATH') {
+            defaultTranslationPath = configNodes[node].attrib.default;
+        }
+    }
+    return defaultTranslationPath;
+}
 
 function getTargetLang(context) {
     var targetLangArr = [];
